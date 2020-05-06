@@ -1,32 +1,49 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <section>
+    <div class="container">
+      <b-navbar>
+        <template slot="brand">
+          <b-navbar-item tag="router-link" :to="{ path: '/' }">
+            <img src="../public/logo3.png" />
+          </b-navbar-item>
+        </template>
+
+        <template slot="end">
+          <b-navbar-item>
+            <router-link to="/">Properties</router-link>
+          </b-navbar-item>
+        </template>
+      </b-navbar>
     </div>
     <router-view />
-  </div>
+  </section>
 </template>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap");
+* {
+  font-family: "Rubik", sans-serif !important;
 }
-
-#nav {
-  padding: 30px;
+.navbar-item img {
+  max-height: 60px !important;
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+a {
+  color: rgb(66, 134, 66) !important;
+  font-size: 1em;
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+h1 {
+  color: white !important;
+  font-size: 2rem !important;
+}
+.text {
+  background-color: rgba(24, 143, 77, 0.55);
+}
+#btn {
+  color: rgb(66, 134, 66) !important;
+  border-color: rgb(66, 134, 66) !important;
+}
+#btn:hover {
+  color: white !important;
+  background-color: rgb(66, 134, 66) !important ;
 }
 </style>
