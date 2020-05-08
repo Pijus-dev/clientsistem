@@ -9,16 +9,55 @@
         </template>
 
         <template slot="end">
-          <b-navbar-item>
+          <!-- <b-navbar-item>
             <router-link to="/">Properties</router-link>
           </b-navbar-item>
+          <b-navbar-item>
+            <router-link to="/register">Register</router-link>
+          </b-navbar-item>
+           <b-navbar-item>
+            <router-link to="/login">Login</router-link>
+          </b-navbar-item> -->
+
+          <span class="nav" v-if="signIn">
+            <b-navbar-item>
+              <router-link to="/properties">Properties</router-link>
+            </b-navbar-item>
+            <b-navbar-item>
+              <b-button id="btn" @click="logout">LogOut</b-button>
+            </b-navbar-item>
+          </span>
+          <span class="nav" v-else>
+            <b-navbar-item>
+              <router-link to="/register">Register</router-link>
+            </b-navbar-item>
+            <b-navbar-item>
+              <router-link to="/login">Login</router-link>
+            </b-navbar-item>
+          </span>
         </template>
       </b-navbar>
     </div>
     <router-view />
   </section>
 </template>
-
+<script>
+import firebase from "firebase/app";
+import "firebase/auth";
+export default {
+  computed: {
+    signIn() {
+      return this.$route.path !== "/login" && this.$route.path !== "/register";
+    }
+  },
+  methods: {
+    logout() {
+      firebase.auth().signOut();
+      this.$router.push("/login");
+    }
+  }
+};
+</script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap");
 * {
@@ -30,6 +69,9 @@
 a {
   color: rgb(66, 134, 66) !important;
   font-size: 1em;
+}
+.nav {
+  display: flex;
 }
 h1 {
   color: white !important;

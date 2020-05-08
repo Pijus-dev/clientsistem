@@ -33,50 +33,25 @@
         </div>
         <div class="columns">
           <div class="column">
-            <div class="table is-bordered is-hoverable">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Available Dates</th>
-                    <th>Book</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>2020 - 05 - 20</td>
-                    <td>
-                      <b-checkbox></b-checkbox>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2020 - 10 - 05</td>
-                    <td>
-                      <b-checkbox></b-checkbox>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2020 - 05 - 20</td>
-                    <td>
-                      <b-checkbox></b-checkbox>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>2020 - 10 - 05</td>
-                    <td>
-                      <b-checkbox></b-checkbox>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <b-field label="Select a date">
+              <b-datepicker
+                placeholder="Type or select a date..."
+                editable
+                :unselectable-dates="arrDate"
+                :min-date="minDate"
+                v-model="date"
+                multiple
+              >
+              </b-datepicker>
+            </b-field>
           </div>
         </div>
         <div class="columns">
           <div class="column">
-            <p class="title is-5">Total Price:</p>
-            <b-button @click="redirect(property.id)" id="btn"
-              >Continue</b-button
-            >
+            <p class="title is-5">Total Price: {{ totalPrice }}</p>
+            <form @submit.prevent="addDate">
+              <b-button native-type="submit" id="btn">Continue</b-button>
+            </form>
           </div>
         </div>
       </div>
@@ -95,13 +70,35 @@ export default {
     return {
       property: {
         id: "",
-        price: undefined
+        price: 0
       },
       id: this.$route.params.id,
-      loadingScreen: true
+      loadingScreen: true,
+      minDate: new Date(),
+      date: [],
+      reserveDate: [],
+      arrDate: []
     };
   },
+  computed: {
+    totalPrice() {
+      return Number(this.property.price) * this.date.length;
+    }
+  },
   methods: {
+    addDate() {
+      this.date.forEach(item => {
+        this.reserveDate.unshift(item.toLocaleDateString("lt"));
+      });
+      firebase
+        .firestore()
+        .collection("properties")
+        .doc(this.id)
+        .update({
+          reserveDate: this.reserveDate
+        })
+        .then(() => alert("done"));
+    },
     get() {
       firebase
         .firestore()
@@ -115,6 +112,14 @@ export default {
             (this.property.price = data.data().price),
             (this.property.city = data.data().city);
           this.property.name = data.data().name;
+          data.data().reserveDate
+            ? (this.reserveDate = data.data().reserveDate)
+            : (this.reserveDate = []);
+        })
+        .then(() => {
+          this.reserveDate.forEach(item => {
+            this.arrDate.push(new Date(item));
+          });
         })
         .then(() => {
           this.loadingScreen = false;
@@ -129,7 +134,6 @@ export default {
 
 <style scoped>
 img {
-  height: 560px !important;
   width: 100% !important;
 }
 .property {

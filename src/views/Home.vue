@@ -3,10 +3,10 @@
     <Spinner v-bind:loading="loadingScreen" />
     <section class="hero text">
       <div class="hero-body">
-        <div class="container">
-          <h1>
-            Places to Stay
-          </h1>
+        <div class="container titlas">
+            <h1>
+              Places to Stay
+            </h1>
         </div>
       </div>
     </section>
@@ -59,7 +59,7 @@
             </div>
             <div class="buttons is-right">
               <b-button @click="redirect(property.id)" id="btn"
-                >Rent {{ property.price }}</b-button
+                >Rent {{ property.price }}$</b-button
               >
             </div>
           </div>
@@ -175,4 +175,5 @@ p {
 .selected {
   margin-top: 13px;
 }
+
 </style>

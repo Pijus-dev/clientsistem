@@ -2,6 +2,8 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import SingleProperty from "../views/SingleProperty.vue";
+import Register from "../views/Register.vue";
+import Login from "../views/Login.vue";
 
 Vue.use(VueRouter);
 
@@ -15,6 +17,16 @@ const routes = [
     path: "/property/id/:id",
     name: "SingleProperty",
     component: SingleProperty
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register
+  },
+  {
+    path: "/login",
+    name: "Login",
+    component: Login
   }
 ];
 
