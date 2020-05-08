@@ -71,7 +71,7 @@ export default {
           this.$router.push("/");
         })
         .catch(e => {
-          (this.isActive = false),
+          (this.isActive = true),
             (this.type = "is-danger"),
             (this.notification = e.message);
         });

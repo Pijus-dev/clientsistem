@@ -9,19 +9,9 @@
         </template>
 
         <template slot="end">
-          <!-- <b-navbar-item>
-            <router-link to="/">Properties</router-link>
-          </b-navbar-item>
-          <b-navbar-item>
-            <router-link to="/register">Register</router-link>
-          </b-navbar-item>
-           <b-navbar-item>
-            <router-link to="/login">Login</router-link>
-          </b-navbar-item> -->
-
           <span class="nav" v-if="signIn">
             <b-navbar-item>
-              <router-link to="/properties">Properties</router-link>
+              <router-link to="/">Properties</router-link>
             </b-navbar-item>
             <b-navbar-item>
               <b-button id="btn" @click="logout">LogOut</b-button>

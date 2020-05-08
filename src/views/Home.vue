@@ -3,10 +3,10 @@
     <Spinner v-bind:loading="loadingScreen" />
     <section class="hero text">
       <div class="hero-body">
-        <div class="container titlas">
-            <h1>
-              Places to Stay
-            </h1>
+        <div class="container">
+          <h1>
+            Places to Stay
+          </h1>
         </div>
       </div>
     </section>
@@ -175,5 +175,4 @@ p {
 .selected {
   margin-top: 13px;
 }
-
 </style>

@@ -61,6 +61,7 @@
                 </b-field>
               </div>
             </div>
+            <router-link to="/login">Have an account? Log In</router-link>
             <div class="buttons is-right">
               <b-button id="btn" native-type="submit" rounded
                 >Register</b-button
@@ -140,5 +141,8 @@ export default {
     #b8ca96,
     #cbd1a0
   );
+}
+a{
+  color:white !important
 }
 </style>
