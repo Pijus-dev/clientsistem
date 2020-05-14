@@ -45,6 +45,9 @@ export default {
       firebase.auth().signOut();
       this.$router.push("/login");
     }
+  },
+  beforeMount() {
+    console.log(firebase.auth().currentUser);
   }
 };
 </script>

@@ -1,21 +1,17 @@
 <template>
   <div>
     <Spinner :loading="loadingScreen" />
-    <section class="hero text">
-      <div class="hero-body">
-        <div class="container">
-          <h1>{{ property.title }} in {{ property.city }}</h1>
-        </div>
-      </div>
-    </section>
+    <Hero :text="property.title + ' ' + 'in' + ' ' + property.city" />
     <div class="container">
       <div class="columns karusele">
         <div class="column">
-          <b-carousel class="carousel" :indicator="false" :pause-info="false">
-            <b-carousel-item v-for="(carousel, i) in property.img" :key="i">
-              <img class="image" :src="carousel" />
-            </b-carousel-item>
-          </b-carousel>
+          <div class="flex-card">
+            <b-carousel class="carousel" :indicator="false" :pause-info="false">
+              <b-carousel-item v-for="(carousel, i) in property.img" :key="i">
+                <img class="image" :src="carousel" />
+              </b-carousel-item>
+            </b-carousel>
+          </div>
         </div>
       </div>
       <div class="property">
@@ -23,17 +19,17 @@
           :active.sync="isActive"
           v-bind:class="type"
           aria-close-label="Close notification"
-        >
-          {{ notification }}
-        </b-notification>
-        <h3 class="title">Details about the House:</h3>
+        >{{ notification }}</b-notification>
+        <h3>Details about the House:</h3>
+        <i class="fab fa-facebook-f"></i>
         <hr />
         <div class="columns">
           <div class="column">
-            <p class="title is-5">City: {{ property.city }}</p>
-            <p class="title is-5">Price per night: {{ property.price }}&euro;</p>
-            <p class="title is-5">
-              Description: <span class="description">{{ property.name }}</span>
+            <p>City: {{ property.city }}</p>
+            <p>Price per night: {{ property.price }}</p>
+            <p>
+              Description:
+              <span class="description">{{ property.name }}</span>
             </p>
           </div>
           <div class="column">
@@ -45,29 +41,13 @@
                 :min-date="minDate"
                 v-model="date"
                 multiple
-              >
-              </b-datepicker>
+              ></b-datepicker>
             </b-field>
           </div>
         </div>
-        <!-- <div class="columns">
-          <div class="column">
-            <b-field label="Select a date">
-              <b-datepicker
-                placeholder="Type or select a date..."
-                editable
-                :unselectable-dates="arrDate"
-                :min-date="minDate"
-                v-model="date"
-                multiple
-              >
-              </b-datepicker>
-            </b-field>
-          </div>
-        </div> -->
         <div class="columns">
           <div class="column">
-            <p class="title is-5">Total Price: {{ totalPrice }}&euro;</p>
+            <p>Total Price: {{ totalPrice }}&euro;</p>
             <form @submit.prevent="addDate">
               <b-modal
                 :active.sync="isComponentModalActive"
@@ -78,17 +58,9 @@
                 aria-modal
               >
                 <modal-form>
-                  <Card
-                    class="stripe-card"
-                    :class="{ complete }"
-                    stripe="pk_test_i28ouERO9Dli1OlxDdGM7HFA00hCEjnkrw"
-                    :options="stripeOptions"
-                    @change="complete = $event.complete"
-                  />
+                  <VCreditCard @change="creditInfoChanged" />
                   <div class="buttons is-right">
-                    <b-button type="is-warning" native-type="submit"
-                      >Submit</b-button
-                    >
+                    <b-button type="is-warning" native-type="submit">Submit</b-button>
                   </div>
                 </modal-form>
               </b-modal>
@@ -97,18 +69,51 @@
           </div>
         </div>
       </div>
+      <div class="columns">
+        <div class="column is-6">
+          <div class="reviews">
+            <h3>Reviews:</h3>
+            <hr />
+            <div v-for="post in posts" :key="post.post" class="columns">
+              <div class="column">
+                <div class="card">
+                  <div class="card-content">
+                    <div class="media">
+                      <div class="media-content">
+                        <p>{{ post.post }}</p>
+                        <hr />
+                        <p>{{ post.userName }}</p>
+                      </div>
+                      <div class="media-right">
+                        <p>{{ post.postedTime }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <b-field label="Leave the review">
+              <b-input type="textarea" v-model="comment" maxlength="400"></b-input>
+            </b-field>
+            <b-button native-type="submit" @click="addComment" type="is-warning">Submit</b-button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Card } from "vue-stripe-elements-plus";
 import firebase from "firebase/app";
+import Hero from "../components/Hero";
 import "firebase/firebase-firestore";
+import "firebase/auth";
 import Spinner from "../components/Spinner";
+import VCreditCard from "v-credit-card";
+import "v-credit-card/dist/VCreditCard.css";
 export default {
   name: "SingleProperty",
-  components: { Spinner, Card },
+  components: { Spinner, VCreditCard, Hero },
   data() {
     return {
       property: {
@@ -125,8 +130,13 @@ export default {
       reserveDate: [],
       arrDate: [],
       isComponentModalActive: false,
-      complete: false,
-      options: {}
+      name: "",
+      cardNumber: "",
+      expiration: "",
+      security: "",
+      comment: "",
+      posts: [],
+      user: ""
     };
   },
   computed: {
@@ -137,6 +147,7 @@ export default {
   methods: {
     addDate() {
       if (this.totalPrice > 0) {
+        this.isComponentModalActive = true;
         this.date.forEach(item => {
           this.reserveDate.unshift(item.toLocaleDateString("lt"));
         });
@@ -146,14 +157,16 @@ export default {
           .doc(this.id)
           .update({
             reserveDate: this.reserveDate
-          })
-          .then(() => {
-            this.isComponentModalActive = true;
           });
       } else {
         this.isActive = true;
         this.type = "is-danger";
         this.notification = "You did not select any dates";
+      }
+    },
+    creditInfoChanged(values) {
+      for (const key in values) {
+        this[key] = values[key];
       }
     },
     get() {
@@ -181,17 +194,75 @@ export default {
         .then(() => {
           this.loadingScreen = false;
         });
+    },
+    getName() {
+      let user = firebase.auth().currentUser;
+      if (user != null) {
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid)
+          .get()
+          .then(doc => {
+            this.user = doc.data().name;
+          })
+          .then(() => {
+            console.log(this.userName);
+          });
+      }
+    },
+    addComment() {
+      firebase
+        .firestore()
+        .collection("properties")
+        .doc(this.id)
+        .collection("reviews")
+        .add({
+          comment: this.comment,
+          name: this.user,
+          time: new Date(
+            firebase.firestore.Timestamp.now().seconds * 1000
+          ).toLocaleDateString()
+        })
+        .then(() => {
+          alert("Done");
+        });
+    },
+    getComment() {
+      firebase
+        .firestore()
+        .collection("properties")
+        .doc(this.id)
+        .collection("reviews")
+        .get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            const obj = {
+              post: doc.data().comment,
+              userName: doc.data().name,
+              postedTime: doc.data().time
+            };
+            this.posts.push(obj);
+          });
+        });
     }
   },
   beforeMount() {
     this.get();
+    this.getComment();
+    this.getName();
   }
 };
 </script>
 
 <style scoped>
 img {
-  width: 100% !important;
+  height: 700px;
+  border-radius: 8px;
+}
+.flex-card {
+  display: flex;
+  justify-content: center;
 }
 .property {
   margin: 30px 0;
@@ -199,44 +270,35 @@ img {
   box-shadow: 0 0px 2px 2px #eee;
   border-radius: 8px;
 }
+.reviews {
+  background-image: url("../../public/Logo.jpg");
+  margin: 30px 0;
+  padding: 30px;
+  box-shadow: 0 0px 2px 2px #4fa07a;
+  border-radius: 8px;
+  height: 700px;
+  overflow: scroll;
+}
 .description {
   font-size: 0.8em;
-}
-/* .bookings {
-  display: flex;
-  justify-content: center;
-} */
-.dates {
-  padding: 10px !important;
-  width: 100% !important;
-}
-tr,
-td,
-th {
-  padding: 15px !important;
-}
-th,
-td {
-  text-align: center !important;
-}
-.table {
-  border-radius: 10% !important;
-}
-table {
-  width: 70% !important;
-  /* margin: auto; */
 }
 .karusele {
   margin-top: 10px;
 }
-.stripe-card {
-  width: 500px;
-  border: 1px solid grey;
-  padding: 13px;
-  margin-bottom: 15px;
-  color: white;
+h3 {
+  color: rgb(51, 49, 49);
+  font-size: 2rem;
 }
-.stripe-card.complete {
-  border-color: green;
+.reviews p{
+  font-size: 1em;
+}
+p {
+  color: rgb(51, 49, 49);
+  font-size: 1.35em;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+.card {
+  border-radius: 10px !important;
 }
 </style>

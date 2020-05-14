@@ -119,7 +119,7 @@ export default {
 
 <style scoped>
 .bg {
-  background-image: url("https://mail.google.com/mail/u/0?ui=2&ik=e2000575e1&attid=0.1.1&permmsgid=msg-f:1666057099166983737&th=171f061ac35da639&view=fimg&sz=s0-l75-ft&attbid=ANGjdJ9dOqWhR-wRp50PvpCzRhfQgyTPNiRpZ3qmeimt4cSNzEnJONBV7oM1qBhciD2kQwzMdH5lWpmqXYGcrK06XnyEjoh58fASTxZWWwSxppQre_Du_eYyYkKuy14&disp=emb");
+  background-image: url("../../public/Logo.jpg");
   height: 98vh;
   background-size: cover;
   /* opacity: 0.4; */
@@ -142,7 +142,12 @@ export default {
     #cbd1a0
   );
 }
-a{
-  color:white !important
+a {
+  color: white !important;
+}
+@media only screen and (max-width: 750px) {
+  .register {
+    margin: 100px auto !important;
+  }
 }
 </style>

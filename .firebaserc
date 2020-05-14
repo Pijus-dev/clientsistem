@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "airbnb-6619b"
+  },
+  "targets": {
+    "airbnb-6619b": {
+      "hosting": {
+        "CLIENTSISTEM": [
+          "clientsistem-fa020"
+        ]
+      }
+    }
+  }
+}

@@ -1,15 +1,7 @@
 <template>
   <div>
     <Spinner v-bind:loading="loadingScreen" />
-    <section class="hero text">
-      <div class="hero-body">
-        <div class="container">
-          <h1>
-            Places to Stay
-          </h1>
-        </div>
-      </div>
-    </section>
+    <Hero text="Places to stay" />
     <div class="container">
       <div class="search">
         <b-field label="Find Your House By Title">
@@ -24,6 +16,7 @@
       <div class="selected">
         <b-field label="Select Your City">
           <b-select placeholder="Select a City" v-model="city" rounded>
+            <option>All</option>
             <option v-for="city in filter" :key="city.id">{{ city }}</option>
           </b-select>
         </b-field>
@@ -74,9 +67,10 @@ import firebase from "firebase/app";
 import "firebase/firebase-firestore";
 import Spinner from "../components/Spinner";
 import uniq from "lodash/uniq";
+import Hero from "../components/Hero";
 export default {
   name: "Home",
-  components: { Spinner },
+  components: { Spinner, Hero },
   data() {
     return {
       properties: [],
@@ -90,7 +84,9 @@ export default {
       return this.properties.filter(value => {
         return (
           value.text.toLowerCase().includes(this.title.toLowerCase()) &&
-          value.city.toLowerCase().includes(this.city.toLowerCase())
+          value.city
+            .toLowerCase()
+            .includes(this.city === "All" ? "" : this.city.toLowerCase())
         );
       });
     },

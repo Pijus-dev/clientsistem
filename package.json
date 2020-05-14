@@ -12,7 +12,10 @@
     "core-js": "^3.6.4",
     "firebase": "^7.14.2",
     "uniq": "^1.0.1",
+    "v-credit-card": "^1.2.4",
     "vue": "^2.6.11",
+    "vue-commentbox": "0.0.2",
+    "vue-dynamic-star-rating": "^1.0.8",
     "vue-router": "^3.1.6",
     "vue-stripe-elements-plus": "^0.3.2"
   },
