@@ -3,7 +3,7 @@
     <Spinner v-bind:loading="loadingScreen" />
     <Hero text="Places to stay" />
     <div class="container">
-      <div class="search">
+      <div class="search slide-left">
         <b-field label="Find Your House By Title">
           <b-autocomplete
             rounded
@@ -13,7 +13,7 @@
           </b-autocomplete>
         </b-field>
       </div>
-      <div class="selected">
+      <div class="selected slide-left">
         <b-field label="Select Your City">
           <b-select placeholder="Select a City" v-model="city" rounded>
             <option>All</option>
@@ -170,5 +170,17 @@ p {
 }
 .selected {
   margin-top: 13px;
+}
+@keyframes slide-left {
+  from {
+    margin-left: 100%;
+  }
+
+  to {
+    margin-left: 0%;
+  }
+}
+.slide-left {
+  animation: slide-left 2s;
 }
 </style>

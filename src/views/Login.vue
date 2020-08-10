@@ -8,18 +8,11 @@
               :active.sync="isActive"
               v-bind:class="type"
               aria-close-label="Close notification"
-            >
-              {{ notification }}
-            </b-notification>
+            >{{ notification }}</b-notification>
             <div class="columns">
               <div class="column">
                 <b-field label="Email">
-                  <b-input
-                    v-model="email"
-                    placeholder="Email"
-                    rounded
-                    required
-                  ></b-input>
+                  <b-input v-model="email" placeholder="Email" rounded required></b-input>
                 </b-field>
               </div>
             </div>
@@ -33,8 +26,7 @@
                     maxlength="30"
                     required
                     v-model="password"
-                  >
-                  </b-input>
+                  ></b-input>
                 </b-field>
               </div>
             </div>
@@ -42,6 +34,7 @@
               <b-button id="btn" native-type="submit" rounded>Login</b-button>
             </div>
           </form>
+          <p @click="prompt" class="has-text-white">Forgot password?</p>
         </div>
       </div>
     </div>
@@ -75,6 +68,41 @@ export default {
             (this.type = "is-danger"),
             (this.notification = e.message);
         });
+    },
+    prompt() {
+      this.$buefy.dialog.prompt({
+        message: `Enter your Email`,
+        inputAttrs: {
+          placeholder: "some@example.com",
+          maxlength: 30,
+          value: ""
+        },
+        trapFocus: true,
+        onConfirm: value => {
+          let auth = firebase.auth();
+
+          auth
+            .sendPasswordResetEmail(value)
+            .then(function() {
+              alert("Email sent");
+            })
+            .catch(function(error) {
+              alert(error.message);
+            });
+        }
+      });
+    },
+    passwordReset() {
+      let auth = firebase.auth();
+
+      auth
+        .sendPasswordResetEmail(this.email)
+        .then(function() {
+          alert("Email sent");
+        })
+        .catch(function(error) {
+          alert(error.message);
+        });
     }
   }
 };
@@ -103,5 +131,8 @@ export default {
     #b8ca96,
     #cbd1a0
   );
+}
+p {
+  cursor: pointer;
 }
 </style>

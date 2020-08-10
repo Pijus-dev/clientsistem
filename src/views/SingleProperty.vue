@@ -26,7 +26,7 @@
         <div class="columns">
           <div class="column">
             <p>City: {{ property.city }}</p>
-            <p>Price per night: {{ property.price }}</p>
+            <p>Price per night: {{ property.price }}&euro;</p>
             <p>
               Description:
               <span class="description">{{ property.name }}</span>
@@ -85,6 +85,15 @@
                         <p>{{ post.userName }}</p>
                       </div>
                       <div class="media-right">
+                        <Star-rating
+                          :rating="post.stars"
+                          :max-rating="4"
+                          :read-only="true"
+                          inactive-color="#000"
+                          active-color="#FFDF00"
+                          v-bind:star-size="15"
+                        ></Star-rating>
+                        <span>Posted Time:</span>
                         <p>{{ post.postedTime }}</p>
                       </div>
                     </div>
@@ -92,9 +101,28 @@
                 </div>
               </div>
             </div>
-            <b-field label="Leave the review">
-              <b-input type="textarea" v-model="comment" maxlength="400"></b-input>
+            <b-field>
+              <b-input
+                type="textarea"
+                v-model="comment"
+                placeholder="Share your experience"
+                maxlength="400"
+              ></b-input>
             </b-field>
+            <div class="rating">
+              <div>
+                Your Rating
+                <Star-rating
+                  v-model="rating"
+                  v-bind:increment="0.5"
+                  v-bind:max-rating="4"
+                  inactive-color="#000"
+                  active-color="#FFDF00"
+                  v-bind:star-size="15"
+                  @rating-selected="setRating"
+                ></Star-rating>
+              </div>
+            </div>
             <b-button native-type="submit" @click="addComment" type="is-warning">Submit</b-button>
           </div>
         </div>
@@ -104,6 +132,7 @@
 </template>
 
 <script>
+import StarRating from "vue-star-rating";
 import firebase from "firebase/app";
 import Hero from "../components/Hero";
 import "firebase/firebase-firestore";
@@ -113,13 +142,14 @@ import VCreditCard from "v-credit-card";
 import "v-credit-card/dist/VCreditCard.css";
 export default {
   name: "SingleProperty",
-  components: { Spinner, VCreditCard, Hero },
+  components: { Spinner, VCreditCard, Hero, StarRating },
   data() {
     return {
       property: {
         id: "",
         price: 0
       },
+      rating: 0,
       id: this.$route.params.id,
       loadingScreen: true,
       minDate: new Date(),
@@ -168,6 +198,9 @@ export default {
       for (const key in values) {
         this[key] = values[key];
       }
+    },
+    setRating(rating) {
+      this.rating = rating;
     },
     get() {
       firebase
@@ -220,6 +253,7 @@ export default {
         .add({
           comment: this.comment,
           name: this.user,
+          rating: this.rating,
           time: new Date(
             firebase.firestore.Timestamp.now().seconds * 1000
           ).toLocaleDateString()
@@ -240,7 +274,8 @@ export default {
             const obj = {
               post: doc.data().comment,
               userName: doc.data().name,
-              postedTime: doc.data().time
+              postedTime: doc.data().time,
+              stars: doc.data().rating
             };
             this.posts.push(obj);
           });
@@ -279,9 +314,6 @@ img {
   height: 700px;
   overflow: scroll;
 }
-.description {
-  font-size: 0.8em;
-}
 .karusele {
   margin-top: 10px;
 }
@@ -289,7 +321,7 @@ h3 {
   color: rgb(51, 49, 49);
   font-size: 2rem;
 }
-.reviews p{
+.reviews p {
   font-size: 1em;
 }
 p {
@@ -300,5 +332,14 @@ p {
 }
 .card {
   border-radius: 10px !important;
+}
+.rating {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 20px;
+}
+.description {
+  font-size: 0.8em;
+  animation: slide-up 2s;
 }
 </style>

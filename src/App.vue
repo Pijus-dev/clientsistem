@@ -14,6 +14,9 @@
               <router-link to="/">Properties</router-link>
             </b-navbar-item>
             <b-navbar-item>
+              <router-link to="/profile">Profile</router-link>
+            </b-navbar-item>
+            <b-navbar-item>
               <b-button id="btn" @click="logout">LogOut</b-button>
             </b-navbar-item>
           </span>
@@ -34,6 +37,7 @@
 <script>
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firebase-firestore";
 export default {
   computed: {
     signIn() {
@@ -45,9 +49,6 @@ export default {
       firebase.auth().signOut();
       this.$router.push("/login");
     }
-  },
-  beforeMount() {
-    console.log(firebase.auth().currentUser);
   }
 };
 </script>
@@ -65,6 +66,7 @@ a {
 }
 .nav {
   display: flex;
+  animation: 1s ease-out 0s 1 slideInFromLeft;
 }
 h1 {
   color: white !important;
@@ -80,5 +82,13 @@ h1 {
 #btn:hover {
   color: white !important;
   background-color: rgb(66, 134, 66) !important ;
+}
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 </style>

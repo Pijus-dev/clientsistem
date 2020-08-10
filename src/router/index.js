@@ -6,6 +6,7 @@ import Home from "../views/Home.vue";
 import SingleProperty from "../views/SingleProperty.vue";
 import Register from "../views/Register.vue";
 import Login from "../views/Login.vue";
+import Profile from "../views/Profile.vue";
 
 Vue.use(VueRouter);
 
@@ -40,6 +41,14 @@ const routes = [
     component: Login,
     meta: {
       requiredAnon: true
+    }
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
+    meta: {
+      requiredAuth: true
     }
   }
 ];

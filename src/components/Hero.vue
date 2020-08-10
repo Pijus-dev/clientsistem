@@ -1,10 +1,8 @@
 <template>
   <section class="hero text">
     <div class="hero-body">
-      <div class="container">
-        <h1>
-          {{ text }}
-        </h1>
+      <div class="container slide-left">
+        <h1>{{ text }}</h1>
       </div>
     </div>
   </section>
@@ -19,4 +17,17 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+@keyframes slide-left {
+  from {
+    margin-left: 100%;
+  }
+
+  to {
+    margin-left: 0%;
+  }
+}
+.slide-left h1 {
+  animation: slide-left 2s;
+}
+</style>
